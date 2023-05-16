@@ -1,0 +1,34 @@
+{
+  "name": "sam-project-base",
+  "version": "1.0.5",
+  "description": "",
+  "main": "build.js",
+  "bin": {
+    "sam-project-base": "main.js",
+    "spb": "main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@naaspati:sameerveda/sam-project-base.git"
+  },
+  "exports": {
+    "./esbuild-init": "./esbuild-init.js",
+    "./svelte/*": "./svelte-plugins/*.js"
+  },
+  "dependencies": {
+    "esbuild": "latest",
+    "install-packages": "^0.2.5",
+    "prompts": "^2.4.2",
+    "serve-http": "^1.0.7"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prettier": {
+    "htmlWhitespaceSensitivity": "ignore",
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "arrowParens": "avoid"
+  }
+}
