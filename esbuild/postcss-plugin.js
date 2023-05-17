@@ -1,5 +1,4 @@
 const { readFileSync, statSync } = require('fs');
-const { basename } = require('path');
 const postcss = require('postcss');
 
 module.exports = (plugins = [require('postcss-nested')]) => ({

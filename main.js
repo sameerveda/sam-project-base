@@ -7,14 +7,19 @@ const { join } = require('path');
 const prompts = require('prompts');
 
 const argv = process.argv;
+const INIT_BUILD = 'init-build';
+const INIT_SVELTE = 'init-svelte';
+const INIT_ALPINE = 'init-alpine';
 
 if (argv.includes('-v')) return console.log(require('./package.json').version);
 if (argv.includes('-h'))
   return console.table([
     ['-v', 'show version'],
     ['-h', 'show help text'],
-    ['init-build', 'create base build file'],
-    ['init-svelte', 'setup svelte project'],
+    ['--yes', 'yes to all replace prompts'],
+    [INIT_BUILD, 'create base build file'],
+    [INIT_SVELTE, 'setup svelte project'],
+    [INIT_ALPINE, 'setup alpinejs project'],
   ]);
 
 async function replace(src, target) {
@@ -29,6 +34,7 @@ async function replace(src, target) {
   }
 
   if (
+    argv.includes('--yes') ||
     (
       await prompts({
         type: 'confirm',
@@ -51,24 +57,38 @@ async function mkdirs() {
   await mkdir('public', { recursive: true });
 }
 
+async function moveAll(src) {
+  await mkdirs();
+
+  for (const f of await readdir(join(__dirname, src))) {
+    await replace(join(src, f), join(f.endsWith('.html') ? 'public' : 'src', f));
+  }
+}
+
+const initBuild = () => replace('build.js', 'build.js');
+
 (async () => {
-  if (argv.includes('init-build')) {
-    await replace('build.js', 'build.js');
+  if (argv.includes(INIT_BUILD)) {
+    await initBuild();
   }
 
   if (argv.includes('init-svelte')) {
     await replace('build-svelte.js', 'build.js');
     await replace('svelte.config.js', 'svelte.config.js');
-    await mkdirs();
 
-    for (const f of await readdir(join(__dirname, 'svelte'))) {
-      f !== 'index.html' && (await replace('svelte/' + f, 'src/' + f));
-    }
-
-    await replace('svelte/index.html', 'public/index.html');
+    moveAll('svelte');
 
     await installPackages({
       packages: ['basscss', 'esbuild-svelte', 'lodash-es', 'postcss', 'postcss-nested', 'svelte'],
+    });
+  }
+
+  if (argv.includes(INIT_ALPINE)) {
+    await initBuild();
+    await moveAll('alpine');
+
+    await installPackages({
+      packages: ['basscss', 'lodash-es', 'postcss', 'postcss-nested', 'alpinejs'],
     });
   }
 })();

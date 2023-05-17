@@ -35,7 +35,6 @@ const startServeHttp = (config = {}) => {
 };
 
 /**
- *
  * @param {Parameters<import('esbuild').build>[0]} config
  * @returns
  */

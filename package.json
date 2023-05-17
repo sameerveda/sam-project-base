@@ -1,6 +1,6 @@
 {
   "name": "sam-project-base",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
   "main": "build.js",
   "bin": {
