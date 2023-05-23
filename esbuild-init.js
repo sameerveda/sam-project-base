@@ -72,13 +72,32 @@ const esbuildDefaultConfig = (isDev = false, config = {}) => {
   };
 };
 
-async function esbuild_start(isDev, config) {
+/**
+ * @param {boolean | 'w' | 's' | 'ws' | 'sw'} isDev
+ * @param {Parameters<import('esbuild').build>[0]} config
+ * @returns
+ */
+async function esbuild_start(isDev, config, port = 3000) {
   config = esbuildDefaultConfig(isDev, config);
 
   if (!isDev) return esbuild.build(config);
   else {
+    const mode = typeof isDev === 'boolean' ? 'ws' : isDev;
     const ctx = await esbuild.context(config);
-    ctx.watch();
+    mode.includes('w') && (await ctx.watch());
+
+    mode.includes('w') &&
+      mode.includes('s') &&
+      console.log(
+        'for live reload include script: \n  ',
+        `new EventSource('/esbuild').addEventListener('change', () => location.reload())`
+      );
+
+    mode.includes('s') &&
+      ctx.serve({
+        servedir: 'public',
+        port,
+      });
 
     return ctx;
   }

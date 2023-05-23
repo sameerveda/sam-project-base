@@ -1,6 +1,6 @@
 {
   "name": "sam-project-base",
-  "version": "1.0.7",
+  "version": "1.0.71",
   "description": "",
   "main": "build.js",
   "bin": {
@@ -18,8 +18,7 @@
   "dependencies": {
     "esbuild": "latest",
     "install-packages": "^0.2.5",
-    "prompts": "^2.4.2",
-    "serve-http": "^1.0.7"
+    "prompts": "^2.4.2"
   },
   "keywords": [],
   "author": "",
