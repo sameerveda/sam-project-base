@@ -86,18 +86,19 @@ async function esbuild_start(isDev, config, port = 3000) {
     const ctx = await esbuild.context(config);
     mode.includes('w') && (await ctx.watch());
 
-    mode.includes('w') &&
-      mode.includes('s') &&
-      console.log(
-        'for live reload include script: \n  ',
-        `new EventSource('/esbuild').addEventListener('change', () => location.reload())`
-      );
-
-    mode.includes('s') &&
-      ctx.serve({
+    if (mode.includes('s')) {
+      await ctx.serve({
         servedir: 'public',
         port,
       });
+
+      mode.includes('w') &&
+        console.log(
+          'server started at: http://localhost:' + port,
+          '\nfor live reload include script: \n  ',
+          `new EventSource('/esbuild').addEventListener('change', () => location.reload())`
+        );
+    }
 
     return ctx;
   }
